@@ -1,16 +1,25 @@
-import create from 'zustand';
+import React from 'react';
+import useRecipeStore from '../recipeStore';
+import SearchBar from './SearchBar';
 
-const useRecipeStore = create((set) => ({
-  recipes: [],
-  searchTerm: '',
-  filteredRecipes: [],
-  addRecipe: (newRecipe) => set((state) => ({ recipes: [...state.recipes, newRecipe] })),
-  setSearchTerm: (term) => set({ searchTerm: term }),
-  filterRecipes: () => set((state) => ({
-    filteredRecipes: state.recipes.filter((recipe) =>
-      recipe.title.toLowerCase().includes(state.searchTerm.toLowerCase())
-    ),
-  })),
-}));
+const RecipeList = () => {
+  const filteredRecipes = useRecipeStore((state) => state.filteredRecipes);
 
-export default useRecipeStore;
+  return (
+    <div>
+      <SearchBar />
+      {filteredRecipes.length > 0 ? (
+        filteredRecipes.map((recipe) => (
+          <div key={recipe.id}>
+            <h3>{recipe.title}</h3>
+            <p>{recipe.description}</p>
+          </div>
+        ))
+      ) : (
+        <p>No recipes found</p>
+      )}
+    </div>
+  );
+};
+
+export default RecipeList;
