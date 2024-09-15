@@ -4,26 +4,42 @@ const AddRecipeForm = () => {
   const [title, setTitle] = useState('');
   const [ingredients, setIngredients] = useState('');
   const [steps, setSteps] = useState('');
-  const [error, setError] = useState('');
+  const [errors, setErrors] = useState({});
+
+  // Validation function
+  const validate = () => {
+    const newErrors = {};
+    
+    if (!title) newErrors.title = 'Title is required';
+    if (!ingredients) newErrors.ingredients = 'Ingredients are required';
+    if (!steps) newErrors.steps = 'Preparation steps are required';
+    
+    return newErrors;
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    if (!title || !ingredients || !steps) {
-      setError('All fields are required.');
+    
+    // Validate form inputs
+    const formErrors = validate();
+    if (Object.keys(formErrors).length > 0) {
+      setErrors(formErrors);  // Update errors state
       return;
     }
-    
-    setError(''); // Clear error
 
+    // Clear errors if no validation issues
+    setErrors({});
+    
+    // Post form data (placeholder functionality)
     const newRecipe = {
       title,
       ingredients,
       steps,
     };
-
+    
     console.log('Submitted Recipe:', newRecipe);
 
+    // Clear the form
     setTitle('');
     setIngredients('');
     setSteps('');
@@ -33,7 +49,7 @@ const AddRecipeForm = () => {
     <div className="max-w-lg mx-auto mt-10">
       <h2 className="text-2xl font-bold mb-6 text-center">Add New Recipe</h2>
       <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md">
-        {error && <p className="text-red-500 mb-4">{error}</p>}
+        {/* Title input */}
         <div className="mb-4">
           <label className="block text-gray-700 mb-2" htmlFor="title">
             Recipe Title
@@ -46,7 +62,10 @@ const AddRecipeForm = () => {
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Enter recipe title"
           />
+          {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title}</p>}
         </div>
+
+        {/* Ingredients input */}
         <div className="mb-4">
           <label className="block text-gray-700 mb-2" htmlFor="ingredients">
             Ingredients
@@ -59,7 +78,10 @@ const AddRecipeForm = () => {
             rows="4"
             placeholder="Enter ingredients, separated by commas"
           />
+          {errors.ingredients && <p className="text-red-500 text-sm mt-1">{errors.ingredients}</p>}
         </div>
+
+        {/* Preparation steps input */}
         <div className="mb-4">
           <label className="block text-gray-700 mb-2" htmlFor="steps">
             Preparation Steps
@@ -72,7 +94,10 @@ const AddRecipeForm = () => {
             rows="6"
             placeholder="Enter preparation steps"
           />
+          {errors.steps && <p className="text-red-500 text-sm mt-1">{errors.steps}</p>}
         </div>
+
+        {/* Submit button */}
         <button
           type="submit"
           className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition duration-300"
@@ -85,3 +110,4 @@ const AddRecipeForm = () => {
 };
 
 export default AddRecipeForm;
+
