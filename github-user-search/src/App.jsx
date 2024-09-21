@@ -1,33 +1,38 @@
 import React, { useState } from 'react';
-import SearchBar from './components/SearchBar';
-import { getUserProfile } from './services/githubAPI';
+import Search from './components/Search';
+import { fetchUserData } from './services/githubService';
 
 function App() {
   const [userData, setUserData] = useState(null);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleSearch = (username) => {
-    getUserProfile(username)
-      .then((response) => {
-        setUserData(response.data);
-        setError(null);
-      })
-      .catch((error) => {
-        setError('User not found');
-        setUserData(null);
-      });
+  const handleSearch = async (username) => {
+    setLoading(true);
+    setError('');
+    setUserData(null);
+
+    try {
+      const data = await fetchUserData(username);
+      setUserData(data);
+    } catch (error) {
+      setError('Looks like we can’t find the user');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="App">
       <h1>GitHub User Search</h1>
-      <SearchBar onSearch={handleSearch} />
+      <Search onSearch={handleSearch} />
+      {loading && <p>Loading...</p>}
       {error && <p>{error}</p>}
       {userData && (
         <div>
-          <h2>{userData.name}</h2>
-          <p>Username: {userData.login}</p>
-          <p>Followers: {userData.followers}</p>
+          <img src={userData.avatar_url} alt={userData.login} width="150" />
+          <h2>{userData.name || userData.login}</h2>
+          <p>{userData.bio}</p>
           <a href={userData.html_url} target="_blank" rel="noopener noreferrer">
             Visit GitHub Profile
           </a>
@@ -38,3 +43,4 @@ function App() {
 }
 
 export default App;
+
