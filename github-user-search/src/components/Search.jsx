@@ -27,7 +27,7 @@ const Search = ({ onSearch, loading, error, userData }) => {
       {/* Conditional rendering for different states */}
       {loading && <p>Loading...</p>}  {/* Loading state */}
 
-      {error && <p>Looks like we can't find the user</p>}  {/* Error message for not found user */}
+      {error && <p>Looks like we can't find the user</p>}  {/* Error message */}
 
       {userData && (  // Display user data if available
         <div>
