@@ -10,15 +10,15 @@ function App() {
   const handleSearch = async (searchParams) => {
     setLoading(true);
     setError(false);
-    setUserData([]);  // Clear previous data
+    setUserData([]); // Clear previous data
 
     try {
       const users = await githubService.fetchUserData(searchParams);
       setUserData(users);
     } catch (err) {
-      setError(true);  // Handle error state if no users found
+      setError(true); // Handle error state if no users found
     } finally {
-      setLoading(false);  // End loading state
+      setLoading(false); // End loading state
     }
   };
 
