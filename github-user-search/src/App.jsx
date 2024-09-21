@@ -25,21 +25,12 @@ function App() {
   return (
     <div className="App">
       <h1>GitHub User Search</h1>
-      <Search onSearch={handleSearch} />
-
-      {/* Conditionally render content based on state */}
-      {loading && <p>Loading...</p>}
-      {error && <p>Looks like we can't find the user</p>}
-      {userData && (
-        <div>
-          <img src={userData.avatar_url} alt={userData.login} width="150" />
-          <h2>{userData.name || userData.login}</h2>
-          <p>{userData.bio || "No bio available"}</p>
-          <a href={userData.html_url} target="_blank" rel="noopener noreferrer">
-            Visit GitHub Profile
-          </a>
-        </div>
-      )}
+      <Search 
+        onSearch={handleSearch} 
+        loading={loading} 
+        error={error} 
+        userData={userData} 
+      />
     </div>
   );
 }
