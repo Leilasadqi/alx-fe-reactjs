@@ -1,14 +1,26 @@
 import React, { useState } from 'react';
+import githubService from '../services/githubService'; // Import the service
 
-const Search = ({ onSearch, loading, error, userData }) => {
+const Search = ({ setUserData, setLoading, setError }) => {
   const [username, setUsername] = useState('');
   const [location, setLocation] = useState('');
   const [minRepos, setMinRepos] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (username.trim() || location.trim() || minRepos) {
-      onSearch({ username, location, minRepos });
+    setLoading(true);
+    setError(false);
+    
+    // Prepare the search parameters
+    const searchParams = { username, location, minRepos };
+
+    try {
+      const users = await githubService.fetchUserData(searchParams);
+      setUserData(users);
+    } catch (err) {
+      setError(true);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -40,29 +52,10 @@ const Search = ({ onSearch, loading, error, userData }) => {
           Search
         </button>
       </form>
-
-      {loading && <p>Loading...</p>}
-      {error && <p>Looks like we can't find the user</p>}
-
-      {userData && userData.length > 0 && (
-        <div className="mt-4">
-          {userData.map((user) => (
-            <div key={user.login} className="flex items-center border-b py-2">
-              <img src={user.avatar_url} alt={user.login} width="50" className="rounded-full" />
-              <div className="ml-4">
-                <h2 className="font-bold">{user.login}</h2>
-                <p>{user.location || "No location available"}</p>
-                <p>Repositories: {user.public_repos}</p>
-                <a href={user.html_url} target="_blank" rel="noopener noreferrer" className="text-blue-500">
-                  View Profile
-                </a>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   );
 };
+
+export default Search;
 
 export default Search;
