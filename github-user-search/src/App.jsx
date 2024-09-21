@@ -1,22 +1,22 @@
 import React, { useState } from 'react';
 import Search from './components/Search';
-import axios from 'axios';
+import githubService from './services/githubService';
 
 function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
-  const [userData, setUserData] = useState(null);
+  const [userData, setUserData] = useState([]);
 
-  const handleSearch = async (username) => {
+  const handleSearch = async (searchParams) => {
     setLoading(true);
     setError(false);
-    setUserData(null);  // Clear previous data
+    setUserData([]);  // Clear previous data
 
     try {
-      const response = await axios.get(`https://api.github.com/users/${username}`);
-      setUserData(response.data);  // Set user data when successful
+      const users = await githubService.fetchUserData(searchParams);
+      setUserData(users);
     } catch (err) {
-      setError(true);  // Handle error state if user is not found
+      setError(true);  // Handle error state if no users found
     } finally {
       setLoading(false);  // End loading state
     }
@@ -24,7 +24,7 @@ function App() {
 
   return (
     <div className="App">
-      <h1>GitHub User Search</h1>
+      <h1 className="text-center text-2xl font-bold">GitHub User Search</h1>
       <Search 
         onSearch={handleSearch} 
         loading={loading} 
